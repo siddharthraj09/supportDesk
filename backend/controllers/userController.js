@@ -24,6 +24,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error("User already exist");
   }
 
+
   //Hash password
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
@@ -49,7 +50,7 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 //@desc Login a new users
-//@route /api/users.login
+//@route /api/users/login
 //@access Public
 const loginUser = asyncHandler(async (req, res) => {
   const { email, login, password } = req.body;
@@ -71,6 +72,20 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
+//@desc Get current user
+//@route /api/users/me
+//@access private
+const getMe = asyncHandler(async (req, res) => {
+    const user = {
+        id:req.user._id,
+        email: req.user.email,
+        name:req.user.name,
+    }
+    res.status(200).json(user)
+
+})
+    
+
 //Genrate token
 
 const generateToken = (id) =>{
@@ -79,7 +94,11 @@ const generateToken = (id) =>{
     })
 }
 
+
+
+
 module.exports = {
   registerUser,
   loginUser,
+  getMe,
 };
